@@ -1,6 +1,6 @@
 /*
 Author: Michael Martin
-This is a simple blink program for the arduino board that will go on for 3 sec off for 1 and on for 1/2 sec repeat.
+This is a simple blink program for the arduino board
 */
 #include <Arduino.h>
 
@@ -10,13 +10,28 @@ void setup() {
 }
 
 void loop() {
-  // put your main code here, to run repeatedly:
-  digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
-  delay(3000);                       // wait for three seconds
-  digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
-  delay(1000);                       // wait for a second
-  digitalWrite(LED_BUILTIN, HIGH);   // turn the LED on (HIGH is the voltage level)
-  delay(500);                       // wait for a half-second
-  digitalWrite(LED_BUILTIN, LOW);    // turn the LED off by making the voltage LOW
-  delay(1000); 
+  // long on
+  digitalWrite(LED_BUILTIN, HIGH);
+  delay(1000);
+  // short off
+  digitalWrite(LED_BUILTIN, LOW);
+  delay(250);
+  // short on
+  digitalWrite(LED_BUILTIN, HIGH);
+  delay(250);
+  // short off
+  digitalWrite(LED_BUILTIN, LOW);
+  delay(250);
+  // short on
+  digitalWrite(LED_BUILTIN, HIGH);
+  delay(250);
+  // long off
+  digitalWrite(LED_BUILTIN, LOW);
+  delay(1000);
+  // long on
+  digitalWrite(LED_BUILTIN, HIGH);
+  delay(1000);
+  // long off
+  digitalWrite(LED_BUILTIN, LOW);
+  delay(1000);
 }
