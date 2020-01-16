@@ -13,3 +13,6 @@ ptr = &var1;
 *ptr = 2; //value at var1 is now 2
 
 ///////////////////////////////////////////////
+
+uint16_t x; //unsigned int with 16 bits
+//changed repo name
