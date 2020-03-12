@@ -86,9 +86,12 @@ void setup() {
  Serial.println("Finished setup");
 
 }
-
+unsigned long startTime, endTime;
 void loop() {
   //Figure out how long this function takes to run with
   //and without the button pressed.
+  startTime = micros();
   runLoop();
+  endTime = micros();
+  Serial.println(endTime - startTime);
 }

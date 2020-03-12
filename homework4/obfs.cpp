@@ -29,8 +29,8 @@
 #define volatile int  volatile int
 #define volatile uint32_t volatile uint32_t
 */
-volatile int  alpha = 0b1101;
 
+ volatile int  alpha = 0b1101;
  volatile int  bravo = 0b100111;
  volatile int  charlie = 0b0010101;
  volatile int  delta  = 0b1110111;
