@@ -10,7 +10,7 @@ Library functions for robot project using Atmega 328p
 #define CLK_SPEED 16000000
 
 #define TRIGGER_PIN 1
-#define ECHO_PIN 0
+#define ECHO_PIN 0 //this is different now TODO change
 #define RED_LED 7
 #define BLUE_LED 6
 #define GREEN_LED 5
@@ -46,14 +46,3 @@ void printDirectionalDistances();
 void updateLEDs();
 void GreenON();
 void GreenOFF();
-
-
-///////////////////////////////////////////////////////
-// Robot motor Functions
-///////////////////////////////////////////////////////
-void setupMotors();
-void forwardMotors();
-void backwardMotors();
-void stopMotors();
-void leftMotors(int x);
-void rightMotors(int x);
