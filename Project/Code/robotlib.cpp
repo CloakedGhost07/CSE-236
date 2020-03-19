@@ -127,18 +127,52 @@ void cycleServo(){ //move the servo to each position and get measurements
 }
 
 //global distance variables
-uint16_t left_distance, right_distance, front_distance;
+uint16_t left_distance = 13, right_distance = 13, front_distance = 13;
+uint16_t left_distance_prev = left_distance;
+uint16_t right_distance_prev = right_distance;
+uint16_t front_distance_prev = front_distance;
 
 void detect(facing d){
-  int i, samples = 5; //loop variables
+  int i, samples = 8; //loop variables
   //get the pointer to store info in the correct place
   uint16_t* dir = (d == FORWARD? &front_distance:(d == RIGHT? &right_distance: &left_distance));
   unsigned long x = 0;
   for(i=0;i<samples;i++){
     x = runUltraSonic(); //get a sum of data
   }
-  *dir = x ;/// samples; //get average of data
-  updateLEDs(); //after updating global variables, update LED's
+  left_distance_prev = left_distance;
+  right_distance_prev = right_distance;
+  front_distance_prev = front_distance;
+  *dir = x  ;/// samples; //get average of data
+  //updateLEDs(); //after updating global variables, update LED's
+}
+
+uint16_t getDistance(){
+  detect(RIGHT);
+  return right_distance;
+}
+
+int detectWall(facing d){
+  uint16_t* dir = (d == FORWARD? &front_distance:(d == RIGHT? &right_distance: &left_distance));
+  uint16_t* dir_prev = (d == FORWARD? &front_distance_prev:(d == RIGHT? &right_distance_prev: &front_distance_prev));
+
+  //while((*dir) <= (*dir_prev) + 0 && (*dir) >= (*dir_prev) - 0  && (*dir) < 13 && (*dir) > 6){
+    detect(d);
+  //}
+  if((*dir) <=  6){
+    return -2;
+  }
+  else if ((*dir) >= 13){
+    return 2;
+  }
+  else if((*dir) < (*dir_prev)){
+    return -1;
+  }
+  else if((*dir) > (*dir_prev) ){
+    return 1;
+  }
+  return 0;
+
 }
 
 //print out to Serial, distances after scanning all three directions
@@ -154,7 +188,23 @@ void GreenON(){
 void GreenOFF(){
   PORTD &= ~(1<<GREEN_LED);
 }
-
+void BlueON(){
+  PORTD |= (1<<BLUE_LED);
+}
+void BlueOFF(){
+  PORTD &= ~(1<<BLUE_LED);
+}
+void RedON(){
+  PORTD |= (1<<RED_LED);
+}
+void RedOFF(){
+  PORTD &= ~(1<<RED_LED);
+}
+void LEDoff(){
+  GreenOFF();
+  BlueOFF();
+  RedOFF();
+}
 //self commenting macros
 void updateLEDs(){
   if(left_distance < TRIGGER_DISTANCE){

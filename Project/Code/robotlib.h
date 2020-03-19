@@ -40,9 +40,17 @@ void cycleServo();
 
 //sensing function, store in global variable
 void detect(facing);
+uint16_t getDistance();
 //Serial printing the distances
 void printDirectionalDistances();
 //turn on/off corresponding LED's functionality
 void updateLEDs();
 void GreenON();
 void GreenOFF();
+void BlueON();
+void BlueOFF();
+void RedON();
+void RedOFF();
+void LEDoff();
+
+int detectWall(facing);
