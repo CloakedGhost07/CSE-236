@@ -21,9 +21,14 @@ void setup() {
 }
 void doTheWallThing();
 void secondTryWall();
+
+
 void loop() {
   doTheWallThing();
 }
+
+
+
 void secondTryWall(){
   uint16_t x = getDistance();
   switch(x){
