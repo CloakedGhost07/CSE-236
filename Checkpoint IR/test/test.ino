@@ -26,10 +26,23 @@ another individual is also a violation of the honor code.
 #define   TRUE        1
 #define   FALSE       0
 
+#define REMOTE_UP 0x20df02fd
+#define REMOTE_DOWN 0x20df827d
+#define REMOTE_LEFT 0x20dfe01f
+#define REMOTE_RIGHT 0x20df609f
+#define REMOTE_OK 0x20df22dd
+#define REMOTE_NUM1 0x20df8877
+#define REMOTE_NUM2 0x20df48b7
+#define REMOTE_NUM3 0x20dfc837
+#define REMOTE_CH_UP 0x20df00ff
+#define REMOTE_CH_DOWN 0x20df807f
+
 volatile uint8_t  newIrPacket = FALSE;
 uint16_t time1[SAMPLE_SIZE], time0[SAMPLE_SIZE];
 uint8_t  i;
+uint32_t x;
 
+void printRemoteButton(uint32_t val);
 /*
  * main loop
  */
@@ -41,11 +54,11 @@ void loop() {
     TCNT1 = 0;                  // reset timer
     newIrPacket = FALSE;
 	//write line of code		// Clear Timer/Counter1, Output Compare A Match Flag by writing 1
-    
+
 	//write line of code		// Enable interrupt on match with OCR1A
   TIFR1 |= (1<<1);
   TIMSK1 |= (1<<1);
-  
+
 
     for(i=0; i<SAMPLE_SIZE; i++) {
 
@@ -59,16 +72,65 @@ void loop() {
 
     } // end for
 
-    Serial.println("Time Logic 1");
+    // Serial.println("Time Logic 1");
+    // for(i=0; i<SAMPLE_SIZE; i++) {
+    //     Serial.print("time1["); Serial.print(i,DEC); Serial.print("] = ");Serial.println(time1[i],DEC);
+    //
+    // }
+    // Serial.println("Time Logic 0");
     for(i=0; i<SAMPLE_SIZE; i++) {
-        Serial.print("time1["); Serial.print(i,DEC); Serial.print("] = ");Serial.println(time1[i],DEC);
+        //Serial.print("time0["); Serial.print(i,DEC); Serial.print("] = ");Serial.println(time0[i],DEC);
+        if(i > 1 && time0[i] > 300){
+          x = (x<<1) + 1;
+        }
+        else if(i > 1){
+          x = (x<<1);
+        }
+
     }
-    Serial.println("Time Logic 0");
-    for(i=0; i<SAMPLE_SIZE; i++) {
-        Serial.print("time0["); Serial.print(i,DEC); Serial.print("] = ");Serial.println(time0[i],DEC);
-    }
+    Serial.print("This is the value  in hex 0x");
+    Serial.println(x,HEX);
+    printRemoteButton(x);
+
 } // end main loop
 
+
+void printRemoteButton(uint32_t val){
+  switch(val){
+    case REMOTE_UP:
+      Serial.println("UP");
+      break;
+    case REMOTE_DOWN:
+      Serial.println("DOWN");
+      break;
+    case REMOTE_LEFT:
+      Serial.println("LEFT");
+      break;
+    case REMOTE_RIGHT:
+      Serial.println("RIGHT");
+      break;
+    case REMOTE_OK:
+      Serial.println("OK");
+      break;
+    case REMOTE_NUM1:
+      Serial.println("NUM1");
+      break;
+    case REMOTE_NUM2:
+      Serial.println("NUM2");
+      break;
+    case REMOTE_NUM3:
+      Serial.println("NUM3");
+      break;
+    case REMOTE_CH_UP:
+      Serial.println("CH_UP");
+      break;
+    case REMOTE_CH_DOWN:
+      Serial.println("CH_DOWN");
+      break;
+    default :
+      Serial.println("Unknown code.");
+  }
+}
 
 // -----------------------------------------------------------------------
 // -----------------------------------------------------------------------

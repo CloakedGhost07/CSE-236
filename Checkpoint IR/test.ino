@@ -54,15 +54,17 @@ void loop() {
       time1[i] = TCNT1;           // and store timer 1 count
 
     } // end for
-
+    uint32_t x;
     Serial.println("Time Logic 1");
     for(i=0; i<SAMPLE_SIZE; i++) {
         Serial.print("time1["); Serial.print(i,DEC); Serial.print("] = ");Serial.println(time1[i],DEC);
+
     }
     Serial.println("Time Logic 0");
     for(i=0; i<SAMPLE_SIZE; i++) {
         Serial.print("time0["); Serial.print(i,DEC); Serial.print("] = ");Serial.println(time0[i],DEC);
     }
+
 } // end main loop
 
 
