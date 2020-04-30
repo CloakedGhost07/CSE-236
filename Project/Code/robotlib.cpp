@@ -9,38 +9,51 @@ Library functions for robot project using Atmega 328p
 #include "robotlib.h"
 
 void setupServo(){
-  TCCR2B &= ~7;
-  TCCR2B |= (1<<CS12) | (1<<CS11) | (1<<CS10); //prescaler for timer 2 //1024
-  DDRD |= (1<<3); //pin out
-  TCCR2B |= (1<<WGM22);
-  TCCR2A |= (1<<WGM20);//wave form generation mode
-  TCCR2A |= (1<<COM2A1) | (1<<COM2B1); //turn on compare mode
-  OCR2A = 156; //top compare register
+  TCCR1B &= ~7;
+  TCCR1B |= (1<<CS12) | (0<<CS11) | (1<<CS10); //prescaler for timer 2 //1024
+  DDRB |= (1<<2); //pin out
+  TCCR1B |= (1<<WGM12);
+  TCCR1A |= (1<<WGM10);//wave form generation mode
+  TCCR1A |= (1<<COM1A1) | (1<<COM1B1); //turn on compare mode
+  //OCR1B = 500; //top compare register
+  delay(100);
+}
+
+void turnServoRight45(){
+  setupServo();//set prescaler and appropriate wgm
+  OCR1B = 12; //right facing 45 degrees
+  delay(250);
 }
 
 void turnServoRight(){
-  OCR2B = 4; //right facing
-  delay(200);
+  setupServo();//set prescaler and appropriate wgm
+  OCR1B = 5; //right facing
+  delay(250);
 }
 
 void turnServoFront(){
-  OCR2B = 12; //forward facing
-  delay(200);
+  setupServo();//set prescaler and appropriate wgm
+  OCR1B = 20; //forward facing
+  delay(250);
 }
 
 void turnServoLeft(){
-  OCR2B = 20; //left facing
-  delay(200);
+  setupServo();//set prescaler and appropriate wgm
+  OCR1B = 35; //left facing
+  delay(250);
+}
+
+void setupLED(){
+  DDRD |= (1 << GREEN_LED) | (1<<BLUE_LED) | (1<<RED_LED);
 }
 
 void setupUltraSonic(){
-  Serial.begin(9600);
-  delay(50);
-  Serial.println("starting setup of ultrasonic");
+  // Serial.begin(9600);
+  // delay(50);
+  // Serial.println("starting setup of ultrasonic");
 
   DDRB |= (1<<TRIGGER_PIN);
   DDRB &= ~(1<<ECHO_PIN);
-  DDRD |= (1 << GREEN_LED) | (1<<BLUE_LED) | (1<<RED_LED);
 
   TCCR1A &= (0x00);
   TCCR1B &= ~(0xdf); // clear all bit values that matter
@@ -49,15 +62,16 @@ void setupUltraSonic(){
   //TIMSK1 |= (1<<5)|(0<<0); //adding this line of code screws up the delay and makes things loopy
   TIFR1 |= (0x01);
 
-  delay(50);
-  Serial.println("setup complete");
-  delay(50);
+  // delay(50);
+  // Serial.println("setup complete");
+  // delay(50);
 
 }
 
 int flag; //global flag variable
 
 uint16_t runUltraSonic(){
+  setupUltraSonic(); //set prescaler and appropriate wgm
   uint16_t a = 0, distance;
   flag = 0;
 
@@ -83,10 +97,10 @@ uint16_t runUltraSonic(){
   }
 
   if(flag == 0){
-    Serial.println("No Echo detected.");
+    // Serial.println("No Echo detected.");
   }
   else{
-  distance = a / 38; //calculated divisor based upon measured test cases
+  distance = a;// / 38; //calculated divisor based upon measured test cases
   //Serial.print(distance);
   //Serial.println(" inches");
   }
@@ -123,11 +137,12 @@ void cycleServo(){ //move the servo to each position and get measurements
   GreenON();
   detect(FORWARD);
   GreenOFF();
-  printDirectionalDistances();
+  // printDirectionalDistances();
 }
 
 //global distance variables
 uint16_t left_distance = 13, right_distance = 13, front_distance = 13;
+uint16_t right45_distance = 0;
 uint16_t left_distance_prev = left_distance;
 uint16_t right_distance_prev = right_distance;
 uint16_t front_distance_prev = front_distance;
@@ -136,6 +151,7 @@ void detect(facing d){
   int i, samples = 8; //loop variables
   //get the pointer to store info in the correct place
   uint16_t* dir = (d == FORWARD? &front_distance:(d == RIGHT? &right_distance: &left_distance));
+  if(d == RIGHT45){dir = &right45_distance;}
   unsigned long x = 0;
   for(i=0;i<samples;i++){
     x = runUltraSonic(); //get a sum of data
@@ -147,9 +163,10 @@ void detect(facing d){
   //updateLEDs(); //after updating global variables, update LED's
 }
 
-uint16_t getDistance(){
-  detect(RIGHT);
-  return right_distance;
+uint16_t getDistance(facing d){
+  uint16_t* dir = (d == FORWARD? &front_distance:(d == RIGHT? &right_distance: &left_distance));
+  if(d == RIGHT45){dir = &right45_distance;}
+  return *dir;
 }
 
 int detectWall(facing d){
@@ -162,7 +179,7 @@ int detectWall(facing d){
   if((*dir) <=  6){
     return -2;
   }
-  else if ((*dir) >= 13){
+  else if ((*dir) >= TRIGGER_DISTANCE){
     return 2;
   }
   else if((*dir) < (*dir_prev)){

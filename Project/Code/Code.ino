@@ -7,30 +7,38 @@ Driver for robot project using Atmega 328p
 */
 #include "robotlib.h"
 #include "motors.h"
+#include "ObstacleCode.h"
 void setup() {
-  //setupServo();
-  setupUltraSonic();
-  setupMotors();
+  // setupLED();
+  // setupUltraSonic();
+  // setupServo();
+  // setupMotors();
+  // Serial.begin(9600);
+  // RedON();
+  // detect(RIGHT);
+  // delay(100);
+  // detect(RIGHT);
+  // RedOFF();
+  // stopMotors();
+  setupForOAM();
   Serial.begin(9600);
-  RedON();
-  detect(RIGHT);
-  delay(100);
-  detect(RIGHT);
-  RedOFF();
-  stopMotors();
 }
 void doTheWallThing();
 void secondTryWall();
 
 
 void loop() {
-  doTheWallThing();
+  //doTheWallThing();
+  //turnServoFront();
+  AvoidanceMode();
+  //cycleServo();
+  //printDirectionalDistances();
 }
 
 
 
 void secondTryWall(){
-  uint16_t x = getDistance();
+  uint16_t x = getDistance(RIGHT);
   switch(x){
     case 8:
       addSpeedRight(20);

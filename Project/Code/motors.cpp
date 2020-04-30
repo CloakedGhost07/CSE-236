@@ -31,17 +31,18 @@ void addSpeedLeft(int x){
   forwardMotors();
 }
 void setForwardSpeed(int x){
-  speedright = x+5;
+  speedright = x+1;
   speedleft = x;
-  forwardMotors();
+  //forwardMotors();
 }
 
 void forwardMotors(){
 
-  OCR2A = speedleft;
-  OCR2B = speedright;
   PORTC |= (1<<1) | (1<<3);
   PORTC &= ~((1<<2) | (1<<4));
+  delay(15);
+  OCR2A = speedleft;
+  OCR2B = speedright;
 
 }
 

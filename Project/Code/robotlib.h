@@ -17,7 +17,8 @@ Library functions for robot project using Atmega 328p
 #define TRIGGER_DISTANCE 12
 #define MOTOR_SPEED_CMP 50
 
-typedef enum{FORWARD,LEFT,RIGHT}facing;
+//enumerated types for detectWall() used to set pointers
+typedef enum{FORWARD,LEFT,RIGHT,RIGHT45}facing;
 
 //sets the prescaler of timer 2 to 1024 and PWM to phase correct
 //servo motor on pinD3
@@ -25,6 +26,7 @@ void setupServo();
 
 //functions to turn the servo to the correct angles
 void turnServoRight();
+void turnServoRight45();
 void turnServoFront();
 void turnServoLeft();
 
@@ -40,10 +42,11 @@ void cycleServo();
 
 //sensing function, store in global variable
 void detect(facing);
-uint16_t getDistance();
+uint16_t getDistance(facing);
 //Serial printing the distances
 void printDirectionalDistances();
 //turn on/off corresponding LED's functionality
+void setupLED();
 void updateLEDs();
 void GreenON();
 void GreenOFF();
@@ -53,4 +56,7 @@ void RedON();
 void RedOFF();
 void LEDoff();
 
+//utility function for taking direction that servo is pointed
+//and returning int values representing suggested actions based
+//upon analysis of the distance
 int detectWall(facing);
